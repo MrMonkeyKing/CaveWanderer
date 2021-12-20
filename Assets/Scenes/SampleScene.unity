@@ -159,7 +159,7 @@ MonoBehaviour:
   seed: 
   useRandomSeed: 1
   maxRandom: 100
-  surfaceLevel: 50
+  surfaceLevel: 0
 --- !u!4 &30222298
 Transform:
   m_ObjectHideFlags: 0

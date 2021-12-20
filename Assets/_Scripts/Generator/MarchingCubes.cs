@@ -111,21 +111,23 @@ namespace _Scripts.Generator
             }
         }
 
-        //                      CN4_________EN4__________CN5
-        //                        /|                    /|
-        //                       / |                   / |
-        //                  EN7-/  |              EN5-/  |
-        //                     /___|______EN6________/   |
-        //                 CN7|    |-EN8          CN6|   |-EN9
-        //                    |    |                 |   |
-        //                    |    |                 |   |
-        //               EN11-|    |            EN10-|   |
-        //                    |    |________EN0______|___|
-        //                    |   /CN0               |   /CN1
-        //                    |  /                   |  /
-        //                    | /-EN3                | /-EN1
-        //                    |/________EN2__________|/
-        //                   CN3                    CN2
+        /*
+         *                      CN4_________EN4__________CN5
+         *                        /|                    /|
+         *                       / |                   / |
+         *                  EN7-/  |              EN5-/  |
+         *                     /___|______EN6________/   |
+         *                 CN7|    |-EN8          CN6|   |-EN9
+         *                    |    |                 |   |
+         *                    |    |                 |   |
+         *               EN11-|    |            EN10-|   |
+         *                    |    |________EN0______|___|
+         *                    |   /CN0               |   /CN1
+         *                    |  /                   |  /
+         *                    | /-EN3                | /-EN1
+         *                    |/________EN2__________|/
+         *                   CN3                    CN2
+        */
         private class Cube
         {
             // put them in arrays
@@ -153,12 +155,12 @@ namespace _Scripts.Generator
                 EN1 = CN2.InFront;
                 EN2 = CN3.Right;
                 EN3 = CN3.InFront;
-
+                
                 EN4 = CN4.Right;
                 EN5 = CN6.InFront;
                 EN6 = CN7.Right;
                 EN7 = CN7.InFront;
-
+                
                 EN8 = CN0.Above;
                 EN9 = CN1.Above;
                 EN10 = CN2.Above;
@@ -166,42 +168,42 @@ namespace _Scripts.Generator
 
                 if (!CN0.Active)
                 {
-                    CubeConfiguration |= 1;
+                    CubeConfiguration += 1;
                 }
 
                 if (!CN1.Active)
                 {
-                    CubeConfiguration |= 2;
+                    CubeConfiguration += 2;
                 }
 
                 if (!CN2.Active)
                 {
-                    CubeConfiguration |= 4;
+                    CubeConfiguration += 4;
                 }
 
                 if (!CN3.Active)
                 {
-                    CubeConfiguration |= 8;
+                    CubeConfiguration += 8;
                 }
 
                 if (!CN4.Active)
                 {
-                    CubeConfiguration |= 16;
+                    CubeConfiguration += 16;
                 }
 
                 if (!CN5.Active)
                 {
-                    CubeConfiguration |= 32;
+                    CubeConfiguration += 32;
                 }
 
                 if (!CN6.Active)
                 {
-                    CubeConfiguration |= 64;
+                    CubeConfiguration += 64;
                 }
 
                 if (!CN7.Active)
                 {
-                    CubeConfiguration |= 128;
+                    CubeConfiguration += 128;
                 }
             }
         }
