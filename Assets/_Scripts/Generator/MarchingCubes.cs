@@ -33,14 +33,59 @@ namespace _Scripts.Generator
         {
             // Debug.Log("CubeConfig: " + cube.CubeConfiguration);
             // Debug.Log("Edge Table Value: " + LookUpTable.EdgeTable[cube.CubeConfiguration]);
-            
-            // switch (LookUpTable.EdgeTable[cube.CubeConfiguration])
-            // {
-            //     /* Maybe not switch but lookUp table */
-            // }
-            
-            // CalculateEdgeNodes();
-            //
+
+            if (LookUpTable.EdgeTable[cube.CubeConfiguration] == 0)
+            {
+                return;
+            }
+            if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 1) != 0)
+            {
+                
+            }
+            if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 2) != 0)
+            {
+                
+            }
+            if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 4) != 0)
+            {
+                
+            }
+            if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 8) != 0)
+            {
+                
+            }
+            if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 16) != 0)
+            {
+                
+            }
+            if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 32) != 0)
+            {
+                
+            }
+            if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 64) != 0)
+            {
+                
+            }
+            if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 128) != 0)
+            {
+                
+            }
+            if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 256) != 0)
+            {
+                
+            }
+            if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 512) != 0)
+            {
+                
+            }
+            if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 1024) != 0)
+            {
+                
+            }
+            if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 2048) != 0)
+            {
+                
+            }
         }
 
         private void MeshFromPoints( /*params Node[] points*/)
@@ -96,15 +141,15 @@ namespace _Scripts.Generator
                         for (int z = 0; z < nodeCountZ - 1; z++)
                         {
                             Cubes[x, y, z] = new Cube(
-                                controlNodes[x, y, z + 1], 
+                                controlNodes[x, y, z + 1],
                                 controlNodes[x + 1, y, z + 1],
-                                controlNodes[x + 1, y, z], 
-                                controlNodes[x, y, z], 
+                                controlNodes[x + 1, y, z],
+                                controlNodes[x, y, z],
                                 controlNodes[x, y + 1, z + 1],
-                                controlNodes[x + 1, y + 1, z + 1], 
-                                controlNodes[x + 1, y + 1, z], 
+                                controlNodes[x + 1, y + 1, z + 1],
+                                controlNodes[x + 1, y + 1, z],
                                 controlNodes[x, y + 1, z]
-                                );
+                            );
                         }
                     }
                 }
@@ -131,8 +176,10 @@ namespace _Scripts.Generator
         private class Cube
         {
             // put them in arrays
+            // always 8 of them
             public ControlNode CN0, CN1, CN2, CN3, CN4, CN5, CN6, CN7;
 
+            // variable amount of EdgeNodes necessary min 3 max 12 (max not needed)
             public Node EN0, EN1, EN2, EN3, EN4, EN5, EN6, EN7, EN8, EN9, EN10, EN11;
 
             public int CubeConfiguration = 0;
@@ -155,12 +202,12 @@ namespace _Scripts.Generator
                 EN1 = CN2.InFront;
                 EN2 = CN3.Right;
                 EN3 = CN3.InFront;
-                
+
                 EN4 = CN4.Right;
                 EN5 = CN6.InFront;
                 EN6 = CN7.Right;
                 EN7 = CN7.InFront;
-                
+
                 EN8 = CN0.Above;
                 EN9 = CN1.Above;
                 EN10 = CN2.Above;
@@ -224,38 +271,42 @@ namespace _Scripts.Generator
             public bool Active;
             public Node Right, Above, InFront;
 
-            public ControlNode(Vector3 position, bool active, float cubeSize, int[,,] map, Vector3 index, int surfaceLevel) : base(
+            public ControlNode(Vector3 position, bool active, float cubeSize, int[,,] map, Vector3 index,
+                int surfaceLevel) : base(
                 position)
             {
                 Active = active;
-                
+
                 // EdgeNode Calculation during triangulation to minimize the amount of calculated EdgeNodes
-                
-                int myValue = map[(int)index.x, (int)index.y, (int)index.z];
+
+                int myValue = map[(int) index.x, (int) index.y, (int) index.z];
                 int modX = (int) index.x + 1;
                 int modY = (int) index.y + 1;
                 int modZ = (int) index.z + 1;
-                
+
                 // Debug.Log("x: " + index.x + ", modX: " + modX + ", mapLength x: " + map.GetLength(0));
                 // Debug.Log("y: " + index.y + ", modY: " + modY + ", mapLength y: " + map.GetLength(1));
                 // Debug.Log("z: " + index.z + ", modZ: " + modZ + ", mapLength z: " + map.GetLength(2));
-                
+
                 if (modX < map.GetLength(0))
                 {
                     int rightNeighborValue = map[modX, (int) index.y, (int) index.z];
-                    Right = new Node(position + Vector3.right * cubeSize * CalculateSurfacePercentage(myValue,rightNeighborValue,surfaceLevel));
+                    Right = new Node(position + Vector3.right * cubeSize *
+                        CalculateSurfacePercentage(myValue, rightNeighborValue, surfaceLevel));
                 }
-                
+
                 if (modY < map.GetLength(1))
                 {
                     int aboveNeighbourValue = map[(int) index.x, modY, (int) index.z];
-                    Above = new Node(position + Vector3.up * cubeSize * CalculateSurfacePercentage(myValue,aboveNeighbourValue,surfaceLevel));
+                    Above = new Node(position + Vector3.up * cubeSize *
+                        CalculateSurfacePercentage(myValue, aboveNeighbourValue, surfaceLevel));
                 }
 
                 if (modZ < map.GetLength(2))
                 {
                     int frontNeighbourValue = map[(int) index.x, (int) index.y, modZ];
-                    InFront = new Node(position + Vector3.forward * cubeSize * CalculateSurfacePercentage(myValue,frontNeighbourValue,surfaceLevel));   
+                    InFront = new Node(position + Vector3.forward * cubeSize *
+                        CalculateSurfacePercentage(myValue, frontNeighbourValue, surfaceLevel));
                 }
             }
 
@@ -270,7 +321,7 @@ namespace _Scripts.Generator
                 float shiftedSurface = surfaceLevel + Mathf.Abs(Mathf.Min(myValue, neighbourValue));
 
                 float surfacePercentage = shiftedSurface / range;
-                
+
                 if (myValue > neighbourValue)
                 {
                     surfacePercentage = 1 - surfacePercentage;
