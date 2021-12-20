@@ -5,7 +5,7 @@ namespace _Scripts.Generator
     /*
      * Currently a copy from Sebastian Lague [Unity] Procedural Cave Generation (E01. Cellular Automata Playlist)
      */
-    [RequireComponent(typeof(MeshGenerator))]
+    [RequireComponent(typeof(MarchingSquares))]
     public class MapGenerator : MonoBehaviour
     {
         public int width;
@@ -52,10 +52,28 @@ namespace _Scripts.Generator
             {
                 SmoothMap();
             }
+
+            int borderSize = 5;
+            int[,] borderedMap = new int[width + borderSize * 2, height + borderSize * 2];
+
+            for (int x = 0; x < borderedMap.GetLength(0); x++)
+            {
+                for (int y = 0; y < borderedMap.GetLength(1); y++)
+                {
+                    if (x >= borderSize && x < width + borderSize && y >= borderSize && y < height + borderSize)
+                    {
+                        borderedMap[x, y] = _map[x - borderSize, y - borderSize];
+                    }
+                    else
+                    {
+                        borderedMap[x, y] = 1;
+                    }
+                }
+            }
             
             /* generating the mesh out of the map */
-            MeshGenerator meshGenerator = GetComponent<MeshGenerator>();
-            meshGenerator.GenerateMesh(_map, 1);
+            MarchingSquares marchingSquares = GetComponent<MarchingSquares>();
+            marchingSquares.GenerateMesh(borderedMap, 1);
         }
 
         /*
@@ -142,7 +160,7 @@ namespace _Scripts.Generator
         //             for (int y = 0; y < height; y++)
         //             {
         //                 Gizmos.color = (_map[x, y] == 1) ? Color.black : Color.white;
-        //                 Vector3 pos = new Vector3(-width / 2 + x + 0.5f, 0, -height / 2 + y);
+        //                 Vector3 pos = new Vector3(-width / 2 + x, 0, -height / 2 + y);
         //                 Gizmos.DrawCube(pos, Vector3.one);
         //             }
         //         }
