@@ -23,6 +23,7 @@
      */
     public struct LookUpTable
     {
+        // Contains information about which edge nodes are used within a cube given its configuration
         public static int[] EdgeTable =
         {
             0x0, 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
@@ -59,6 +60,7 @@
             0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0
         };
 
+        // Contains information about in which order which edge nodes are needed to be connected to form triangles 
         public static int[][] TriangleTable =
         {
             new[] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},

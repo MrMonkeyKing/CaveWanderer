@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace _Scripts.Generator
@@ -27,77 +28,165 @@ namespace _Scripts.Generator
                     }
                 }
             }
+
+            Mesh mesh = new Mesh();
+            GetComponent<MeshFilter>().mesh = mesh;
+
+            mesh.vertices = _vertecies.ToArray();
+            mesh.triangles = _triangles.ToArray();
+            // mesh.RecalculateNormals();
         }
 
         private void TriangulateCube(Cube cube)
         {
-            // Debug.Log("CubeConfig: " + cube.CubeConfiguration);
-            // Debug.Log("Edge Table Value: " + LookUpTable.EdgeTable[cube.CubeConfiguration]);
+            Debug.Log("CubeConfig: " + cube.CubeConfiguration);
+            string bin = Convert.ToString(LookUpTable.EdgeTable[cube.CubeConfiguration], 2);
+            Debug.Log("Edge Table Value: " + bin);
+            Debug.Log("Triangle Table Value: " + LookUpTable.TriangleTable[cube.CubeConfiguration].ToString());
+            if (cube.CN0.Active)
+            {
+                Debug.Log("CN0 is Active");
+            }
+            if (cube.CN1.Active)
+            {
+                Debug.Log("CN1 is Active");
+            }
+            if (cube.CN2.Active)
+            {
+                Debug.Log("CN2 is Active");
+            }
+            if (cube.CN3.Active)
+            {
+                Debug.Log("CN3 is Active");
+            }
+            if (cube.CN4.Active)
+            {
+                Debug.Log("CN4 is Active");
+            }
+            if (cube.CN5.Active)
+            {
+                Debug.Log("CN5 is Active");
+            }
+            if (cube.CN6.Active)
+            {
+                Debug.Log("CN6 is Active");
+            }
+            if (cube.CN7.Active)
+            {
+                Debug.Log("CN7 is Active");
+            }
+
+            // Optimization calculate edge nodes when needed instead of all when cube is created
+
+            List<Node> CutEdgeNodes = new List<Node>();
 
             if (LookUpTable.EdgeTable[cube.CubeConfiguration] == 0)
             {
                 return;
             }
+
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 1) != 0)
             {
-                
+                CutEdgeNodes.Add(cube.EdgeNodes[0]);
             }
+
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 2) != 0)
             {
-                
+                CutEdgeNodes.Add(cube.EdgeNodes[1]);
             }
+
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 4) != 0)
             {
-                
+                CutEdgeNodes.Add(cube.EdgeNodes[2]);
             }
+
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 8) != 0)
             {
-                
+                CutEdgeNodes.Add(cube.EdgeNodes[3]);
             }
+
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 16) != 0)
             {
-                
+                CutEdgeNodes.Add(cube.EdgeNodes[4]);
             }
+
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 32) != 0)
             {
-                
+                CutEdgeNodes.Add(cube.EdgeNodes[5]);
             }
+
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 64) != 0)
             {
-                
+                CutEdgeNodes.Add(cube.EdgeNodes[6]);
             }
+
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 128) != 0)
             {
-                
+                CutEdgeNodes.Add(cube.EdgeNodes[7]);
             }
+
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 256) != 0)
             {
-                
+                CutEdgeNodes.Add(cube.EdgeNodes[8]);
             }
+
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 512) != 0)
             {
-                
+                CutEdgeNodes.Add(cube.EdgeNodes[9]);
             }
+
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 1024) != 0)
             {
-                
+                CutEdgeNodes.Add(cube.EdgeNodes[10]);
             }
+
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 2048) != 0)
             {
-                
+                CutEdgeNodes.Add(cube.EdgeNodes[11]);
+            }
+
+            AssignVertecies(CutEdgeNodes.ToArray());
+            MeshFromCube(cube);
+        }
+
+        private void MeshFromCube(Cube cube)
+        {
+            // how to create the triangles
+            int[] triangulationArray = LookUpTable.TriangleTable[cube.CubeConfiguration];
+            for (int i = 0; i < triangulationArray.Length; i += 3)
+            {
+                if (triangulationArray[i] == -1)
+                {
+                    break;
+                }
+                // Debug.Log(triangulationArray[i]);
+
+                int EdgeNodeIndexA = triangulationArray[i];
+                int EdgeNodeIndexB = triangulationArray[i + 1];
+                int EdgeNodeIndexC = triangulationArray[i + 2];
+
+                CreateTriangle(cube.EdgeNodes[EdgeNodeIndexA], cube.EdgeNodes[EdgeNodeIndexB],
+                    cube.EdgeNodes[EdgeNodeIndexC]);
             }
         }
 
-        private void MeshFromPoints( /*params Node[] points*/)
+        private void AssignVertecies(params Node[] points)
         {
+            for (int i = 0; i < points.Length; i++)
+            {
+                if (points[i].VertexIndex == -1)
+                {
+                    points[i].VertexIndex = _vertecies.Count;
+                    _vertecies.Add(points[i].Position);
+                }
+            }
         }
 
-        private void AssignVertecies()
+        private void CreateTriangle(Node a, Node b, Node c)
         {
-        }
-
-        private void CreateTriangle()
-        {
+            _triangles.Add(a.VertexIndex);
+            _triangles.Add(b.VertexIndex);
+            _triangles.Add(c.VertexIndex);
         }
 
         #region Data/Structs
@@ -175,12 +264,11 @@ namespace _Scripts.Generator
         */
         private class Cube
         {
-            // put them in arrays
-            // always 8 of them
             public ControlNode CN0, CN1, CN2, CN3, CN4, CN5, CN6, CN7;
 
             // variable amount of EdgeNodes necessary min 3 max 12 (max not needed)
             public Node EN0, EN1, EN2, EN3, EN4, EN5, EN6, EN7, EN8, EN9, EN10, EN11;
+            public Dictionary<int, Node> EdgeNodes;
 
             public int CubeConfiguration = 0;
 
@@ -188,6 +276,8 @@ namespace _Scripts.Generator
                 ControlNode cn3, ControlNode cn4, ControlNode cn5,
                 ControlNode cn6, ControlNode cn7)
             {
+                Debug.Log("created Cube");
+                
                 CN0 = cn0;
                 CN1 = cn1;
                 CN2 = cn2;
@@ -212,6 +302,25 @@ namespace _Scripts.Generator
                 EN9 = CN1.Above;
                 EN10 = CN2.Above;
                 EN11 = CN3.Above;
+
+                // Edge nodes organized in a Dictionary
+                EdgeNodes = new Dictionary<int, Node>();
+
+                EdgeNodes.Add(0, EN0);
+                EdgeNodes.Add(1, EN1);
+                EdgeNodes.Add(2, EN2);
+                EdgeNodes.Add(3, EN3);
+
+                EdgeNodes.Add(4, EN4);
+                EdgeNodes.Add(5, EN5);
+                EdgeNodes.Add(6, EN6);
+                EdgeNodes.Add(7, EN7);
+
+                EdgeNodes.Add(8, EN8);
+                EdgeNodes.Add(9, EN9);
+                EdgeNodes.Add(10, EN10);
+                EdgeNodes.Add(11, EN11);
+
 
                 if (!CN0.Active)
                 {
@@ -284,15 +393,12 @@ namespace _Scripts.Generator
                 int modY = (int) index.y + 1;
                 int modZ = (int) index.z + 1;
 
-                // Debug.Log("x: " + index.x + ", modX: " + modX + ", mapLength x: " + map.GetLength(0));
-                // Debug.Log("y: " + index.y + ", modY: " + modY + ", mapLength y: " + map.GetLength(1));
-                // Debug.Log("z: " + index.z + ", modZ: " + modZ + ", mapLength z: " + map.GetLength(2));
-
                 if (modX < map.GetLength(0))
                 {
                     int rightNeighborValue = map[modX, (int) index.y, (int) index.z];
                     Right = new Node(position + Vector3.right * cubeSize *
                         CalculateSurfacePercentage(myValue, rightNeighborValue, surfaceLevel));
+                    // Right = new Node(position + Vector3.right * cubeSize * 0.5f);
                 }
 
                 if (modY < map.GetLength(1))
@@ -300,6 +406,7 @@ namespace _Scripts.Generator
                     int aboveNeighbourValue = map[(int) index.x, modY, (int) index.z];
                     Above = new Node(position + Vector3.up * cubeSize *
                         CalculateSurfacePercentage(myValue, aboveNeighbourValue, surfaceLevel));
+                    // Above = new Node(position + Vector3.up * cubeSize * 0.5f);
                 }
 
                 if (modZ < map.GetLength(2))
@@ -307,6 +414,7 @@ namespace _Scripts.Generator
                     int frontNeighbourValue = map[(int) index.x, (int) index.y, modZ];
                     InFront = new Node(position + Vector3.forward * cubeSize *
                         CalculateSurfacePercentage(myValue, frontNeighbourValue, surfaceLevel));
+                    // InFront = new Node(position + Vector3.forward * cubeSize * 0.5f);
                 }
             }
 
@@ -333,79 +441,127 @@ namespace _Scripts.Generator
 
         #endregion
 
-        private void OnDrawGizmos()
-        {
-            if (_myCubeCloud != null)
-            {
-                for (int x = 0; x < _myCubeCloud.Cubes.GetLength(0); x++)
-                {
-                    for (int y = 0; y < _myCubeCloud.Cubes.GetLength(1); y++)
-                    {
-                        for (int z = 0; z < _myCubeCloud.Cubes.GetLength(2); z++)
-                        {
-                            Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN0.Active ? Color.red : Color.cyan;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN0.Position, Vector3.one * 0.4f);
-
-                            Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN1.Active ? Color.red : Color.cyan;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN1.Position, Vector3.one * 0.4f);
-
-                            Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN2.Active ? Color.red : Color.cyan;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN2.Position, Vector3.one * 0.4f);
-
-                            Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN3.Active ? Color.red : Color.cyan;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN3.Position, Vector3.one * 0.4f);
-
-                            Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN4.Active ? Color.red : Color.cyan;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN4.Position, Vector3.one * 0.4f);
-
-                            Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN5.Active ? Color.red : Color.cyan;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN5.Position, Vector3.one * 0.4f);
-
-                            Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN6.Active ? Color.red : Color.cyan;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN6.Position, Vector3.one * 0.4f);
-
-                            Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN7.Active ? Color.red : Color.cyan;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN7.Position, Vector3.one * 0.4f);
-
-                            Gizmos.color = Color.magenta;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN0.Position, Vector3.one * 0.2f);
-
-                            Gizmos.color = Color.magenta;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN1.Position, Vector3.one * 0.2f);
-
-                            Gizmos.color = Color.magenta;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN2.Position, Vector3.one * 0.2f);
-
-                            Gizmos.color = Color.magenta;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN3.Position, Vector3.one * 0.2f);
-
-                            Gizmos.color = Color.magenta;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN4.Position, Vector3.one * 0.2f);
-
-                            Gizmos.color = Color.magenta;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN5.Position, Vector3.one * 0.2f);
-
-                            Gizmos.color = Color.magenta;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN6.Position, Vector3.one * 0.2f);
-
-                            Gizmos.color = Color.magenta;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN7.Position, Vector3.one * 0.2f);
-
-                            Gizmos.color = Color.magenta;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN8.Position, Vector3.one * 0.2f);
-
-                            Gizmos.color = Color.magenta;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN9.Position, Vector3.one * 0.2f);
-
-                            Gizmos.color = Color.magenta;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN10.Position, Vector3.one * 0.2f);
-
-                            Gizmos.color = Color.magenta;
-                            Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN11.Position, Vector3.one * 0.2f);
-                        }
-                    }
-                }
-            }
-        }
+        // private void OnDrawGizmos()
+        // {
+        //     if (_myCubeCloud != null)
+        //     {
+        //         for (int x = 0; x < _myCubeCloud.Cubes.GetLength(0); x++)
+        //         {
+        //             for (int y = 0; y < _myCubeCloud.Cubes.GetLength(1); y++)
+        //             {
+        //                 for (int z = 0; z < _myCubeCloud.Cubes.GetLength(2); z++)
+        //                 {
+        //                     // Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN0.Active ? Color.red : Color.cyan;
+        //                     // Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN0.Position, Vector3.one * 0.4f);
+        //                     //
+        //                     // Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN1.Active ? Color.red : Color.cyan;
+        //                     // Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN1.Position, Vector3.one * 0.4f);
+        //                     //
+        //                     // Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN2.Active ? Color.red : Color.cyan;
+        //                     // Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN2.Position, Vector3.one * 0.4f);
+        //                     //
+        //                     // Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN3.Active ? Color.red : Color.cyan;
+        //                     // Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN3.Position, Vector3.one * 0.4f);
+        //                     //
+        //                     // Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN4.Active ? Color.red : Color.cyan;
+        //                     // Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN4.Position, Vector3.one * 0.4f);
+        //                     //
+        //                     // Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN5.Active ? Color.red : Color.cyan;
+        //                     // Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN5.Position, Vector3.one * 0.4f);
+        //                     //
+        //                     // Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN6.Active ? Color.red : Color.cyan;
+        //                     // Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN6.Position, Vector3.one * 0.4f);
+        //                     //
+        //                     // Gizmos.color = _myCubeCloud.Cubes[x, y, z].CN7.Active ? Color.red : Color.cyan;
+        //                     // Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN7.Position, Vector3.one * 0.4f);
+        //
+        //                     if (_myCubeCloud.Cubes[x, y, z].CN0.Active)
+        //                     {
+        //                         Gizmos.color = Color.red;
+        //                         Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN0.Position, Vector3.one * 0.2f);
+        //                     }
+        //
+        //                     if (_myCubeCloud.Cubes[x, y, z].CN1.Active)
+        //                     {
+        //                         Gizmos.color = Color.red;
+        //                         Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN1.Position, Vector3.one * 0.2f);
+        //                     }
+        //                     
+        //                     if (_myCubeCloud.Cubes[x, y, z].CN2.Active)
+        //                     {
+        //                         Gizmos.color = Color.red;
+        //                         Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN2.Position, Vector3.one * 0.2f);
+        //                     }
+        //                     
+        //                     if (_myCubeCloud.Cubes[x, y, z].CN3.Active)
+        //                     {
+        //                         Gizmos.color = Color.red;
+        //                         Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN3.Position, Vector3.one * 0.2f);
+        //                     }
+        //                     
+        //                     if (_myCubeCloud.Cubes[x, y, z].CN4.Active)
+        //                     {
+        //                         Gizmos.color = Color.red;
+        //                         Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN4.Position, Vector3.one * 0.2f);
+        //                     }
+        //                     
+        //                     if (_myCubeCloud.Cubes[x, y, z].CN5.Active)
+        //                     {
+        //                         Gizmos.color = Color.red;
+        //                         Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN5.Position, Vector3.one * 0.2f);
+        //                     }
+        //                     
+        //                     if (_myCubeCloud.Cubes[x, y, z].CN6.Active)
+        //                     {
+        //                         Gizmos.color = Color.red;
+        //                         Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN6.Position, Vector3.one * 0.2f);
+        //                     }
+        //                     
+        //                     if (_myCubeCloud.Cubes[x, y, z].CN7.Active)
+        //                     {
+        //                         Gizmos.color = Color.red;
+        //                         Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].CN7.Position, Vector3.one * 0.2f);
+        //                     }
+        //
+        //                     Gizmos.color = Color.magenta;
+        //                     Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN0.Position, Vector3.one * 0.05f);
+        //
+        //                     Gizmos.color = Color.magenta;
+        //                     Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN1.Position, Vector3.one * 0.05f);
+        //
+        //                     Gizmos.color = Color.magenta;
+        //                     Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN2.Position, Vector3.one * 0.05f);
+        //
+        //                     Gizmos.color = Color.magenta;
+        //                     Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN3.Position, Vector3.one * 0.05f);
+        //
+        //                     Gizmos.color = Color.magenta;
+        //                     Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN4.Position, Vector3.one * 0.05f);
+        //
+        //                     Gizmos.color = Color.magenta;
+        //                     Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN5.Position, Vector3.one * 0.05f);
+        //
+        //                     Gizmos.color = Color.magenta;
+        //                     Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN6.Position, Vector3.one * 0.05f);
+        //
+        //                     Gizmos.color = Color.magenta;
+        //                     Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN7.Position, Vector3.one * 0.05f);
+        //
+        //                     Gizmos.color = Color.magenta;
+        //                     Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN8.Position, Vector3.one * 0.05f);
+        //
+        //                     Gizmos.color = Color.magenta;
+        //                     Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN9.Position, Vector3.one * 0.05f);
+        //
+        //                     Gizmos.color = Color.magenta;
+        //                     Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN10.Position, Vector3.one * 0.05f);
+        //
+        //                     Gizmos.color = Color.magenta;
+        //                     Gizmos.DrawCube(_myCubeCloud.Cubes[x, y, z].EN11.Position, Vector3.one * 0.05f);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
     }
 }

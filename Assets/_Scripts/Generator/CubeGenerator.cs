@@ -48,11 +48,11 @@ namespace _Scripts.Generator
             RandomFillMap();
 
             /* smoothing of the map */
-            // SmoothMap();
+            SmoothMap();
             
             /* generating a mesh out of our map */
-            // MarchingCubes cubes = GetComponent<MarchingCubes>();
-            // cubes.GenerateMesh(_map, 1, surfaceLevel);
+            MarchingCubes cubes = GetComponent<MarchingCubes>();
+            cubes.GenerateMesh(_map, 1, surfaceLevel);
         }
 
         private void RandomFillMap()
@@ -117,27 +117,27 @@ namespace _Scripts.Generator
             return voxelCount > 0 ? combinedVoxelValue / voxelCount : 0;
         }
 
-        private void OnDrawGizmos()
-        {
-            if (_map != null)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int z = 0; z < depth; z++)
-                        {
-                            if (_map[x, y, z] >= surfaceLevel)
-                            {
-                                float scaledMapValue = (float) _map[x, y, z] / maxRandom;
-                                Gizmos.color = Color.HSVToRGB(0f, 0, scaledMapValue);
-                                Vector3 pos = new Vector3(-width / 2 + x, -height / 2 + y, -depth / 2 + z);
-                                Gizmos.DrawCube(pos, Vector3.one * .3f);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        // private void OnDrawGizmos()
+        // {
+        //     if (_map != null)
+        //     {
+        //         for (int x = 0; x < width; x++)
+        //         {
+        //             for (int y = 0; y < height; y++)
+        //             {
+        //                 for (int z = 0; z < depth; z++)
+        //                 {
+        //                     if (_map[x, y, z] >= surfaceLevel)
+        //                     {
+        //                         float scaledMapValue = (float) _map[x, y, z] / maxRandom;
+        //                         Gizmos.color = Color.HSVToRGB(0f, 0, scaledMapValue);
+        //                         Vector3 pos = new Vector3(-width / 2 + x, -height / 2 + y, -depth / 2 + z);
+        //                         Gizmos.DrawCube(pos, Vector3.one * .3f);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
