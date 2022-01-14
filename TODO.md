@@ -2,4 +2,12 @@
 
 - New Noise implementation for map generation
 - reimplement components in library (Generator, Noise, ...)
-- think aboput topics for presentation
+- think about topics for presentation
+</br></br>
+Possible Structure:
+- Generator
+  - Noise
+    - OpenSimplexNoise
+  - MeshGenerator
+  - MapGenerator
+  - Map/GeneratorSettings?
