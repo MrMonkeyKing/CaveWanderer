@@ -40,7 +40,6 @@ namespace _Scripts.Generator
 
             mesh.vertices = _vertecies.ToArray();
             mesh.triangles = _triangles.ToArray();
-            // mesh.RecalculateNormals();
 
             CreateWallMesh();
         }

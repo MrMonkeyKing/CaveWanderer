@@ -91,6 +91,34 @@ namespace _Scripts.Generator
             }
         }
 
+        private int GetSurroundingWallCount(Vector3 pos)
+        {
+            int wallCount = 0;
+
+            for (int x = (int) pos.x - 1; x <= pos.x + 1; x++)
+            {
+                for (int y = (int) pos.y - 1; y <= pos.y + 1; y++)
+                {
+                    for (int z = (int) pos.z - 1; z <= pos.z + 1; z++)
+                    {
+                        if (x >= 0 && x < width && y >= 0 && y < height && z >= 0 && z < depth)
+                        {
+                            if (x != pos.x && y != pos.y && z != pos.z)
+                            {
+                                
+                            }   
+                        }
+                        else
+                        {
+                            wallCount++;
+                        }
+                    }
+                }
+            }
+            
+            return wallCount;
+        }
+
         private int GetSurroundingVoxelValue(Vector3 pos)
         {
             int combinedVoxelValue = 0;

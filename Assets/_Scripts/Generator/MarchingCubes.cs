@@ -34,47 +34,46 @@ namespace _Scripts.Generator
 
             mesh.vertices = _vertecies.ToArray();
             mesh.triangles = _triangles.ToArray();
-            // mesh.RecalculateNormals();
         }
 
         private void TriangulateCube(Cube cube)
         {
-            Debug.Log("CubeConfig: " + cube.CubeConfiguration);
-            string bin = Convert.ToString(LookUpTable.EdgeTable[cube.CubeConfiguration], 2);
-            Debug.Log("Edge Table Value: " + bin);
-            Debug.Log("Triangle Table Value: " + LookUpTable.TriangleTable[cube.CubeConfiguration].ToString());
-            if (cube.CN0.Active)
-            {
-                Debug.Log("CN0 is Active");
-            }
-            if (cube.CN1.Active)
-            {
-                Debug.Log("CN1 is Active");
-            }
-            if (cube.CN2.Active)
-            {
-                Debug.Log("CN2 is Active");
-            }
-            if (cube.CN3.Active)
-            {
-                Debug.Log("CN3 is Active");
-            }
-            if (cube.CN4.Active)
-            {
-                Debug.Log("CN4 is Active");
-            }
-            if (cube.CN5.Active)
-            {
-                Debug.Log("CN5 is Active");
-            }
-            if (cube.CN6.Active)
-            {
-                Debug.Log("CN6 is Active");
-            }
-            if (cube.CN7.Active)
-            {
-                Debug.Log("CN7 is Active");
-            }
+            // Debug.Log("CubeConfig: " + cube.CubeConfiguration);
+            // string bin = Convert.ToString(LookUpTable.EdgeTable[cube.CubeConfiguration], 2);
+            // Debug.Log("Edge Table Value: " + bin);
+            // Debug.Log("Triangle Table Value: " + LookUpTable.TriangleTable[cube.CubeConfiguration].ToString());
+            // if (cube.CN0.Active)
+            // {
+            //     Debug.Log("CN0 is Active");
+            // }
+            // if (cube.CN1.Active)
+            // {
+            //     Debug.Log("CN1 is Active");
+            // }
+            // if (cube.CN2.Active)
+            // {
+            //     Debug.Log("CN2 is Active");
+            // }
+            // if (cube.CN3.Active)
+            // {
+            //     Debug.Log("CN3 is Active");
+            // }
+            // if (cube.CN4.Active)
+            // {
+            //     Debug.Log("CN4 is Active");
+            // }
+            // if (cube.CN5.Active)
+            // {
+            //     Debug.Log("CN5 is Active");
+            // }
+            // if (cube.CN6.Active)
+            // {
+            //     Debug.Log("CN6 is Active");
+            // }
+            // if (cube.CN7.Active)
+            // {
+            //     Debug.Log("CN7 is Active");
+            // }
 
             // Optimization calculate edge nodes when needed instead of all when cube is created
 
