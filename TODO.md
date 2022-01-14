@@ -1,4 +1,5 @@
 ﻿# Todo
 
-- Noise Map brauch einen neuen SmoothAlgorithmus
-  - vllt abhängig von Nachbarwerten und Nachbar anzahl
+- New Noise implementation for map generation
+- reimplement components in library (Generator, Noise, ...)
+- think aboput topics for presentation
