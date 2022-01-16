@@ -1,13 +1,19 @@
-﻿# Todo
+﻿# PRESENTATION
 
-- New Noise implementation for map generation
-- reimplement components in library (Generator, Noise, ...)
-- think about topics for presentation
-</br></br>
-Possible Structure:
-- Generator
-  - Noise
-    - OpenSimplexNoise
-  - MeshGenerator
-  - MapGenerator
-  - Map/GeneratorSettings?
+### Topics:
+  - Types of map generation
+    - Noise Maps
+      - Random Noise
+      - Simplex Noise
+      - NoiseScaling
+    - Value Maps
+      - BinaryMap
+      - ValueScaleMap
+  - Mesh generation
+    - Meshes:
+      - Vertex Buffer
+      - Index Buffer
+      - Normals
+    - Algorithms:
+      - 2D Marching Squares
+      - 3D Marching Cubes

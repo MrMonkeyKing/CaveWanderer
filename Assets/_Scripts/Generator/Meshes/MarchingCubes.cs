@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace _Scripts.Generator
 {
+    [RequireComponent(typeof(MeshFilter))]
+    [RequireComponent(typeof(MeshRenderer))]
     public class MarchingCubes : MeshGenerator
     {
         private List<Vector3> _vertecies;
@@ -38,46 +39,9 @@ namespace _Scripts.Generator
 
         private void TriangulateCube(Cube cube)
         {
-            // Debug.Log("CubeConfig: " + cube.CubeConfiguration);
-            // string bin = Convert.ToString(LookUpTable.EdgeTable[cube.CubeConfiguration], 2);
-            // Debug.Log("Edge Table Value: " + bin);
-            // Debug.Log("Triangle Table Value: " + LookUpTable.TriangleTable[cube.CubeConfiguration].ToString());
-            // if (cube.CN0.Active)
-            // {
-            //     Debug.Log("CN0 is Active");
-            // }
-            // if (cube.CN1.Active)
-            // {
-            //     Debug.Log("CN1 is Active");
-            // }
-            // if (cube.CN2.Active)
-            // {
-            //     Debug.Log("CN2 is Active");
-            // }
-            // if (cube.CN3.Active)
-            // {
-            //     Debug.Log("CN3 is Active");
-            // }
-            // if (cube.CN4.Active)
-            // {
-            //     Debug.Log("CN4 is Active");
-            // }
-            // if (cube.CN5.Active)
-            // {
-            //     Debug.Log("CN5 is Active");
-            // }
-            // if (cube.CN6.Active)
-            // {
-            //     Debug.Log("CN6 is Active");
-            // }
-            // if (cube.CN7.Active)
-            // {
-            //     Debug.Log("CN7 is Active");
-            // }
-
             // Optimization calculate edge nodes when needed instead of all when cube is created
 
-            List<Node> CutEdgeNodes = new List<Node>();
+            List<Node> cutEdgeNodes = new List<Node>();
 
             if (LookUpTable.EdgeTable[cube.CubeConfiguration] == 0)
             {
@@ -86,65 +50,65 @@ namespace _Scripts.Generator
 
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 1) != 0)
             {
-                CutEdgeNodes.Add(cube.EdgeNodes[0]);
+                cutEdgeNodes.Add(cube.EdgeNodes[0]);
             }
 
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 2) != 0)
             {
-                CutEdgeNodes.Add(cube.EdgeNodes[1]);
+                cutEdgeNodes.Add(cube.EdgeNodes[1]);
             }
 
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 4) != 0)
             {
-                CutEdgeNodes.Add(cube.EdgeNodes[2]);
+                cutEdgeNodes.Add(cube.EdgeNodes[2]);
             }
 
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 8) != 0)
             {
-                CutEdgeNodes.Add(cube.EdgeNodes[3]);
+                cutEdgeNodes.Add(cube.EdgeNodes[3]);
             }
 
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 16) != 0)
             {
-                CutEdgeNodes.Add(cube.EdgeNodes[4]);
+                cutEdgeNodes.Add(cube.EdgeNodes[4]);
             }
 
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 32) != 0)
             {
-                CutEdgeNodes.Add(cube.EdgeNodes[5]);
+                cutEdgeNodes.Add(cube.EdgeNodes[5]);
             }
 
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 64) != 0)
             {
-                CutEdgeNodes.Add(cube.EdgeNodes[6]);
+                cutEdgeNodes.Add(cube.EdgeNodes[6]);
             }
 
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 128) != 0)
             {
-                CutEdgeNodes.Add(cube.EdgeNodes[7]);
+                cutEdgeNodes.Add(cube.EdgeNodes[7]);
             }
 
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 256) != 0)
             {
-                CutEdgeNodes.Add(cube.EdgeNodes[8]);
+                cutEdgeNodes.Add(cube.EdgeNodes[8]);
             }
 
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 512) != 0)
             {
-                CutEdgeNodes.Add(cube.EdgeNodes[9]);
+                cutEdgeNodes.Add(cube.EdgeNodes[9]);
             }
 
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 1024) != 0)
             {
-                CutEdgeNodes.Add(cube.EdgeNodes[10]);
+                cutEdgeNodes.Add(cube.EdgeNodes[10]);
             }
 
             if ((LookUpTable.EdgeTable[cube.CubeConfiguration] & 2048) != 0)
             {
-                CutEdgeNodes.Add(cube.EdgeNodes[11]);
+                cutEdgeNodes.Add(cube.EdgeNodes[11]);
             }
 
-            AssignVertecies(CutEdgeNodes.ToArray());
+            AssignVertecies(cutEdgeNodes.ToArray());
             MeshFromCube(cube);
         }
 
@@ -158,14 +122,13 @@ namespace _Scripts.Generator
                 {
                     break;
                 }
-                // Debug.Log(triangulationArray[i]);
 
-                int EdgeNodeIndexA = triangulationArray[i];
-                int EdgeNodeIndexB = triangulationArray[i + 1];
-                int EdgeNodeIndexC = triangulationArray[i + 2];
+                int edgeNodeIndexA = triangulationArray[i];
+                int edgeNodeIndexB = triangulationArray[i + 1];
+                int edgeNodeIndexC = triangulationArray[i + 2];
 
-                CreateTriangle(cube.EdgeNodes[EdgeNodeIndexA], cube.EdgeNodes[EdgeNodeIndexB],
-                    cube.EdgeNodes[EdgeNodeIndexC]);
+                CreateTriangle(cube.EdgeNodes[edgeNodeIndexA], cube.EdgeNodes[edgeNodeIndexB],
+                    cube.EdgeNodes[edgeNodeIndexC]);
             }
         }
 
@@ -263,10 +226,10 @@ namespace _Scripts.Generator
         */
         private class Cube
         {
-            public ControlNode CN0, CN1, CN2, CN3, CN4, CN5, CN6, CN7;
+            public ControlNode Cn0, Cn1, Cn2, Cn3, Cn4, Cn5, Cn6, Cn7;
 
             // variable amount of EdgeNodes necessary min 3 max 12 (max not needed)
-            public Node EN0, EN1, EN2, EN3, EN4, EN5, EN6, EN7, EN8, EN9, EN10, EN11;
+            public Node En0, En1, En2, En3, En4, En5, En6, En7, En8, En9, En10, En11;
             public Dictionary<int, Node> EdgeNodes;
 
             public int CubeConfiguration = 0;
@@ -275,88 +238,87 @@ namespace _Scripts.Generator
                 ControlNode cn3, ControlNode cn4, ControlNode cn5,
                 ControlNode cn6, ControlNode cn7)
             {
-                Debug.Log("created Cube");
-                
-                CN0 = cn0;
-                CN1 = cn1;
-                CN2 = cn2;
-                CN3 = cn3;
-                CN4 = cn4;
-                CN5 = cn5;
-                CN6 = cn6;
-                CN7 = cn7;
+
+                Cn0 = cn0;
+                Cn1 = cn1;
+                Cn2 = cn2;
+                Cn3 = cn3;
+                Cn4 = cn4;
+                Cn5 = cn5;
+                Cn6 = cn6;
+                Cn7 = cn7;
 
                 // calculate EdgeNodes during triangulation (SetEdgeNodes) 
-                EN0 = CN0.Right;
-                EN1 = CN2.InFront;
-                EN2 = CN3.Right;
-                EN3 = CN3.InFront;
+                En0 = Cn0.Right;
+                En1 = Cn2.InFront;
+                En2 = Cn3.Right;
+                En3 = Cn3.InFront;
 
-                EN4 = CN4.Right;
-                EN5 = CN6.InFront;
-                EN6 = CN7.Right;
-                EN7 = CN7.InFront;
+                En4 = Cn4.Right;
+                En5 = Cn6.InFront;
+                En6 = Cn7.Right;
+                En7 = Cn7.InFront;
 
-                EN8 = CN0.Above;
-                EN9 = CN1.Above;
-                EN10 = CN2.Above;
-                EN11 = CN3.Above;
+                En8 = Cn0.Above;
+                En9 = Cn1.Above;
+                En10 = Cn2.Above;
+                En11 = Cn3.Above;
 
                 // Edge nodes organized in a Dictionary
                 EdgeNodes = new Dictionary<int, Node>();
 
-                EdgeNodes.Add(0, EN0);
-                EdgeNodes.Add(1, EN1);
-                EdgeNodes.Add(2, EN2);
-                EdgeNodes.Add(3, EN3);
+                EdgeNodes.Add(0, En0);
+                EdgeNodes.Add(1, En1);
+                EdgeNodes.Add(2, En2);
+                EdgeNodes.Add(3, En3);
 
-                EdgeNodes.Add(4, EN4);
-                EdgeNodes.Add(5, EN5);
-                EdgeNodes.Add(6, EN6);
-                EdgeNodes.Add(7, EN7);
+                EdgeNodes.Add(4, En4);
+                EdgeNodes.Add(5, En5);
+                EdgeNodes.Add(6, En6);
+                EdgeNodes.Add(7, En7);
 
-                EdgeNodes.Add(8, EN8);
-                EdgeNodes.Add(9, EN9);
-                EdgeNodes.Add(10, EN10);
-                EdgeNodes.Add(11, EN11);
+                EdgeNodes.Add(8, En8);
+                EdgeNodes.Add(9, En9);
+                EdgeNodes.Add(10, En10);
+                EdgeNodes.Add(11, En11);
 
 
-                if (!CN0.Active)
+                if (!Cn0.Active)
                 {
                     CubeConfiguration += 1;
                 }
 
-                if (!CN1.Active)
+                if (!Cn1.Active)
                 {
                     CubeConfiguration += 2;
                 }
 
-                if (!CN2.Active)
+                if (!Cn2.Active)
                 {
                     CubeConfiguration += 4;
                 }
 
-                if (!CN3.Active)
+                if (!Cn3.Active)
                 {
                     CubeConfiguration += 8;
                 }
 
-                if (!CN4.Active)
+                if (!Cn4.Active)
                 {
                     CubeConfiguration += 16;
                 }
 
-                if (!CN5.Active)
+                if (!Cn5.Active)
                 {
                     CubeConfiguration += 32;
                 }
 
-                if (!CN6.Active)
+                if (!Cn6.Active)
                 {
                     CubeConfiguration += 64;
                 }
 
-                if (!CN7.Active)
+                if (!Cn7.Active)
                 {
                     CubeConfiguration += 128;
                 }
@@ -397,7 +359,6 @@ namespace _Scripts.Generator
                     int rightNeighborValue = map[modX, (int) index.y, (int) index.z];
                     Right = new Node(position + Vector3.right * cubeSize *
                         CalculateSurfacePercentage(myValue, rightNeighborValue, surfaceLevel));
-                    // Right = new Node(position + Vector3.right * cubeSize * 0.5f);
                 }
 
                 if (modY < map.GetLength(1))
@@ -405,7 +366,6 @@ namespace _Scripts.Generator
                     int aboveNeighbourValue = map[(int) index.x, modY, (int) index.z];
                     Above = new Node(position + Vector3.up * cubeSize *
                         CalculateSurfacePercentage(myValue, aboveNeighbourValue, surfaceLevel));
-                    // Above = new Node(position + Vector3.up * cubeSize * 0.5f);
                 }
 
                 if (modZ < map.GetLength(2))
@@ -413,7 +373,6 @@ namespace _Scripts.Generator
                     int frontNeighbourValue = map[(int) index.x, (int) index.y, modZ];
                     InFront = new Node(position + Vector3.forward * cubeSize *
                         CalculateSurfacePercentage(myValue, frontNeighbourValue, surfaceLevel));
-                    // InFront = new Node(position + Vector3.forward * cubeSize * 0.5f);
                 }
             }
 
