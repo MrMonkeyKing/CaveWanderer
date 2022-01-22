@@ -3,7 +3,7 @@
 ### Topics:
   - Types of map generation
     - Noise Maps
-      - Random Noise
+      - PseudoRandom Noise
       - Simplex Noise
       - NoiseScaling
     - Value Maps

@@ -1,7 +1,7 @@
-﻿namespace _Scripts.Generator
+﻿namespace _Scripts.Generator.Meshes
 {
     /*
-     * LookUpTable and Cube modelled after http://paulbourke.net/geometry/polygonise/
+     * LookUpTable and Cube modelled after: http://paulbourke.net/geometry/polygonise/
      *
      * Cube Model:
      *
@@ -60,7 +60,7 @@
             0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0
         };
 
-        // Contains information about in which order which edge nodes are needed to be connected to form triangles 
+        // Contains information about in which order which edge nodes need to be connected to form triangles 
         public static int[][] TriangleTable =
         {
             new[] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},

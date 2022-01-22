@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace _Scripts.Generator
+namespace _Scripts.Generator.Meshes
 {
     public class MeshGenerator : MonoBehaviour
     {

@@ -12,6 +12,7 @@ namespace _Scripts.Generator
         public string seed;
         public bool useRandomSeed;
         [Range(1, 20)] public int noiseScale = 1;
+        [SerializeField] [HideInInspector] private int noiseScaleChanged;
 
         [Range(0, 100)] public int surfaceLevel = 1;
 
@@ -22,7 +23,8 @@ namespace _Scripts.Generator
         private void Awake()
         {
             GenerateMap();
-
+            noiseScaleChanged = noiseScale;
+            
             if (surfaceLevel > _maxRandom - 1)
             {
                 surfaceLevel = _maxRandom - 1;
@@ -45,9 +47,10 @@ namespace _Scripts.Generator
 
         public void OnValidate()
         {
-            if (_map != null)
+            if (_map != null && noiseScaleChanged != noiseScale)
             {
                 GenerateMap();
+                noiseScaleChanged = noiseScale;
             }
         }
 

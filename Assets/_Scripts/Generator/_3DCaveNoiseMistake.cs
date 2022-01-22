@@ -1,4 +1,5 @@
-﻿using _Scripts.Generator.Noise;
+﻿using _Scripts.Generator.Meshes;
+using _Scripts.Generator.Noise;
 using UnityEngine;
 
 namespace _Scripts.Generator
